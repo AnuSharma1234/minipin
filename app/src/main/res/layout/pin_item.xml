@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="12dp"
+    android:layout_marginBottom="12dp"
+    android:background="@drawable/pin_item_background">
+
+    <ImageView
+        android:id="@+id/pinImage"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:scaleType="centerCrop"
+        android:contentDescription="Pin Image" />
+
+    <TextView
+        android:id="@+id/pinTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Pin Title"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginTop="8dp" />
+
+    <TextView
+        android:id="@+id/pinDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Pin Description"
+        android:textSize="14sp"
+        android:layout_marginTop="4dp"
+        android:maxLines="2"
+        android:ellipsize="end" />
+
+</LinearLayout>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="12dp"
+    android:layout_marginBottom="12dp"
+    android:background="@drawable/saved_pin_background">
+
+    <TextView
+        android:id="@+id/savedPinTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Pin Title"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/savedPinDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Pin Description"
+        android:textSize="14sp"
+        android:layout_marginTop="4dp"
+        android:maxLines="2"
+        android:ellipsize="end" />
+
+</LinearLayout>
