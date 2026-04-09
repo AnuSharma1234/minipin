@@ -2,100 +2,133 @@ package com.example.minipin;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.FrameLayout;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class ViewPinsActivity extends AppCompatActivity {
 
-    private LinearLayout savedPinsContainer;
-    private Button btnBackFromView;
-    private TextView noDataText;
+    private RecyclerView recyclerViewSavedPins;
+    private FrameLayout emptyStateSaved;
+    private PinAdapter pinAdapter;
     private PinDatabaseHelper dbHelper;
     private List<Pin> pins;
+    private BottomNavigationView bottomNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_pins);
 
-        savedPinsContainer = findViewById(R.id.savedPinsContainer);
-        btnBackFromView = findViewById(R.id.btnBackFromView);
-        noDataText = findViewById(R.id.noDataText);
-
+        initializeViews();
+        pins = new ArrayList<>();
+        pinAdapter = new PinAdapter(pins, this);
+        setupRecyclerView();
+        setupBottomNavigation();
+        
         dbHelper = new PinDatabaseHelper(this);
-
         loadSavedPins();
-
-        btnBackFromView.setOnClickListener(v -> finish());
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        // Reload pins when returning from other activities
         loadSavedPins();
     }
 
-    private void loadSavedPins() {
-        savedPinsContainer.removeAllViews();
-        pins = dbHelper.getAllPins();
-
-        if (pins.isEmpty()) {
-            noDataText.setVisibility(View.VISIBLE);
-        } else {
-            noDataText.setVisibility(View.GONE);
-            for (Pin pin : pins) {
-                addSavedPinView(pin);
-            }
-        }
+    private void initializeViews() {
+        recyclerViewSavedPins = findViewById(R.id.recyclerViewSavedPins);
+        emptyStateSaved = findViewById(R.id.emptyStateSaved);
+        bottomNavigationView = findViewById(R.id.bottomNavigation);
     }
 
-    private void addSavedPinView(Pin pin) {
-        LayoutInflater inflater = LayoutInflater.from(this);
-        View pinView = inflater.inflate(R.layout.saved_pin_item, savedPinsContainer, false);
+    private void setupRecyclerView() {
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
+        recyclerViewSavedPins.setLayoutManager(gridLayoutManager);
+        recyclerViewSavedPins.setAdapter(pinAdapter);
 
-        TextView titleView = pinView.findViewById(R.id.savedPinTitle);
-        TextView descView = pinView.findViewById(R.id.savedPinDescription);
-
-        titleView.setText(pin.getTitle());
-        descView.setText(pin.getDescription());
-
-        // Click to view detail
-        pinView.setOnClickListener(v -> {
+        pinAdapter.setOnPinClickListener(pin -> {
             Intent intent = new Intent(ViewPinsActivity.this, DetailActivity.class);
             intent.putExtra("title", pin.getTitle());
             intent.putExtra("description", pin.getDescription());
+            intent.putExtra("imagePath", pin.getImagePath());
             startActivity(intent);
         });
 
-        // Long press to delete
-        pinView.setOnLongClickListener(v -> {
-            showDeleteConfirmationDialog(pin.getId(), pin.getTitle());
-            return true;
+        pinAdapter.setOnPinLongClickListener((pin, position) -> {
+            showDeleteConfirmationDialog(pin.getId(), pin.getTitle(), position);
         });
-
-        savedPinsContainer.addView(pinView);
     }
 
-    private void showDeleteConfirmationDialog(int pinId, String pinTitle) {
+    private void setupBottomNavigation() {
+        if (bottomNavigationView != null) {
+            bottomNavigationView.setOnItemSelectedListener(item -> {
+                int itemId = item.getItemId();
+                if (itemId == R.id.nav_home) {
+                    Intent intent = new Intent(ViewPinsActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                    return true;
+                } else if (itemId == R.id.nav_saved) {
+                    // Already on saved
+                    return true;
+                } else if (itemId == R.id.nav_create) {
+                    Intent intent = new Intent(ViewPinsActivity.this, AddPinActivity.class);
+                    startActivity(intent);
+                    return true;
+                }
+                return false;
+            });
+            
+            // Set saved as selected
+            bottomNavigationView.setSelectedItemId(R.id.nav_saved);
+        }
+    }
+
+    private void loadSavedPins() {
+        pins = dbHelper.getAllPins();
+        
+        if (pinAdapter != null) {
+            pinAdapter.updateList(pins);
+        }
+        
+        updateEmptyState();
+    }
+
+    private void updateEmptyState() {
+        if (pins.isEmpty()) {
+            emptyStateSaved.setVisibility(View.VISIBLE);
+            recyclerViewSavedPins.setVisibility(View.GONE);
+        } else {
+            emptyStateSaved.setVisibility(View.GONE);
+            recyclerViewSavedPins.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void showDeleteConfirmationDialog(int pinId, String pinTitle, int position) {
         new AlertDialog.Builder(this)
                 .setTitle("Delete Pin")
                 .setMessage("Delete \"" + pinTitle + "\"?")
                 .setPositiveButton("Yes", (dialog, which) -> {
                     boolean success = dbHelper.deletePin(pinId);
                     if (success) {
-                        loadSavedPins();
+                        pinAdapter.removeItem(position);
+                        pins.remove(position);
+                        updateEmptyState();
                     }
                 })
                 .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
                 .show();
     }
 }
+
+

@@ -1,47 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:background="@color/md_theme_light_background">
 
-    <TextView
+    <!-- Header -->
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="My Saved Pins"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="16dp" />
+        android:background="@color/md_theme_light_primary"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp">
 
-    <ScrollView
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Saved Pins"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:textColor="@color/white" />
+
+    </FrameLayout>
+
+    <!-- RecyclerView for saved pins -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewSavedPins"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:padding="8dp"
+        android:clipToPadding="false" />
+
+    <!-- Empty state -->
+    <FrameLayout
+        android:id="@+id/emptyStateSaved"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:visibility="gone">
 
         <LinearLayout
-            android:id="@+id/savedPinsContainer"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="24dp">
 
             <TextView
-                android:id="@+id/noDataText"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="No pins saved yet"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No saved pins yet"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/md_theme_light_onSurfaceVariant"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Create a new pin to save it"
                 android:textSize="16sp"
-                android:gravity="center"
-                android:layout_marginTop="32dp" />
+                android:textColor="@color/md_theme_light_onSurfaceVariant"
+                android:gravity="center" />
 
         </LinearLayout>
 
-    </ScrollView>
+    </FrameLayout>
 
-    <Button
-        android:id="@+id/btnBackFromView"
+    <!-- Bottom Navigation View -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Back"
-        android:layout_marginTop="16dp" />
+        android:background="@color/white"
+        app:itemIconTint="@color/md_theme_light_primary"
+        app:itemTextColor="@color/md_theme_light_primary"
+        app:menu="@menu/bottom_navigation_menu"
+        app:labelVisibilityMode="labeled" />
 
 </LinearLayout>
+
