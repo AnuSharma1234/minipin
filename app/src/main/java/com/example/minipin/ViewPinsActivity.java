@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ViewPinsActivity extends AppCompatActivity {
@@ -29,6 +30,8 @@ public class ViewPinsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_view_pins);
 
         initializeViews();
+        pins = new ArrayList<>();
+        pinAdapter = new PinAdapter(pins, this);
         setupRecyclerView();
         setupBottomNavigation();
         
@@ -49,7 +52,6 @@ public class ViewPinsActivity extends AppCompatActivity {
     }
 
     private void setupRecyclerView() {
-        pinAdapter = new PinAdapter(pins, this);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
         recyclerViewSavedPins.setLayoutManager(gridLayoutManager);
         recyclerViewSavedPins.setAdapter(pinAdapter);
@@ -68,26 +70,28 @@ public class ViewPinsActivity extends AppCompatActivity {
     }
 
     private void setupBottomNavigation() {
-        bottomNavigationView.setOnItemSelectedListener(item -> {
-            int itemId = item.getItemId();
-            if (itemId == R.id.nav_home) {
-                Intent intent = new Intent(ViewPinsActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
-                return true;
-            } else if (itemId == R.id.nav_saved) {
-                // Already on saved
-                return true;
-            } else if (itemId == R.id.nav_create) {
-                Intent intent = new Intent(ViewPinsActivity.this, AddPinActivity.class);
-                startActivity(intent);
-                return true;
-            }
-            return false;
-        });
-        
-        // Set saved as selected
-        bottomNavigationView.setSelectedItemId(R.id.nav_saved);
+        if (bottomNavigationView != null) {
+            bottomNavigationView.setOnItemSelectedListener(item -> {
+                int itemId = item.getItemId();
+                if (itemId == R.id.nav_home) {
+                    Intent intent = new Intent(ViewPinsActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                    return true;
+                } else if (itemId == R.id.nav_saved) {
+                    // Already on saved
+                    return true;
+                } else if (itemId == R.id.nav_create) {
+                    Intent intent = new Intent(ViewPinsActivity.this, AddPinActivity.class);
+                    startActivity(intent);
+                    return true;
+                }
+                return false;
+            });
+            
+            // Set saved as selected
+            bottomNavigationView.setSelectedItemId(R.id.nav_saved);
+        }
     }
 
     private void loadSavedPins() {
@@ -95,9 +99,6 @@ public class ViewPinsActivity extends AppCompatActivity {
         
         if (pinAdapter != null) {
             pinAdapter.updateList(pins);
-        } else {
-            pinAdapter = new PinAdapter(pins, this);
-            recyclerViewSavedPins.setAdapter(pinAdapter);
         }
         
         updateEmptyState();
@@ -129,4 +130,5 @@ public class ViewPinsActivity extends AppCompatActivity {
                 .show();
     }
 }
+
 

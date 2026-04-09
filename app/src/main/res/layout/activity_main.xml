@@ -83,6 +83,6 @@
         app:itemIconTint="@color/md_theme_light_primary"
         app:itemTextColor="@color/md_theme_light_primary"
         app:menu="@menu/bottom_navigation_menu"
-        app:labelVisibilityMode="labelVisibilityAuto" />
+        app:labelVisibilityMode="auto" />
 
 </LinearLayout>

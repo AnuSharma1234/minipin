@@ -33,7 +33,7 @@
         <item name="colorOutline">@color/md_theme_light_outline</item>
         
         <!-- Text Appearance -->
-        <item name="android:fontFamily">@font/roboto</item>
+        <item name="android:fontFamily">sans-serif</item>
         <item name="textAppearanceLabelSmall">@style/TextAppearance.Minipin.LabelSmall</item>
         <item name="textAppearanceLabelMedium">@style/TextAppearance.Minipin.LabelMedium</item>
         <item name="textAppearanceBodySmall">@style/TextAppearance.Minipin.BodySmall</item>
