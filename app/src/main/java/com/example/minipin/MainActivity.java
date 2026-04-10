@@ -117,17 +117,28 @@ public class MainActivity extends AppCompatActivity {
         
         // Static pin data with sample images
         String[][] staticPins = {
-                {"Beautiful Sunset", "A stunning sunset over the mountains"},
-                {"Ocean Waves", "Waves crashing on the sandy beach"},
-                {"Forest Trail", "A peaceful walk through the forest"},
-                {"City Lights", "The city skyline at night"}
+                {"Funny Cat", "cat_yeah mood unlocked"},
+                {"Manga Climber", "Peak panel energy"},
+                {"Ghibli Mountains", "Soft sky and calm vibes"},
+                {"Osaka Chaos", "Certified funny Osaka moment"},
+                {"We Bears", "Another funny classic"}
         };
 
-        for (String[] pinData : staticPins) {
+        int[] drawableIds = {
+                R.drawable.cat_yeah,
+                R.drawable.climber_pfp,
+                R.drawable.mountains_ghibli,
+                R.drawable.osaka_in_iraq,
+                R.drawable.we_bears
+        };
+
+        for (int i = 0; i < staticPins.length; i++) {
             Pin pin = new Pin();
-            pin.setTitle(pinData[0]);
-            pin.setDescription(pinData[1]);
-            pin.setImagePath(""); // No image path for static pins
+            pin.setTitle(staticPins[i][0]);
+            pin.setDescription(staticPins[i][1]);
+            // have to get the packagename ( from a user's ssytem and then add the URI base of static drawable Ids )
+            String imagePath = "android.resource://" + getPackageName() + "/" + drawableIds[i];
+            pin.setImagePath(imagePath);
             pins.add(pin);
         }
 

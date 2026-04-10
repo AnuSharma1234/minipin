@@ -1,11 +1,11 @@
 package com.example.minipin;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -16,12 +16,18 @@ public class DetailActivity extends AppCompatActivity {
     private TextView detailTitle, detailDescription;
     private ImageView detailImage;
     private Button btnShare, btnCall;
+    private PinDatabaseHelper dbHelper;
+
+    private String currentTitle = "";
+    private String currentDescription = "";
+    private String currentImagePath = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
+        dbHelper = new PinDatabaseHelper(this);
         initializeViews();
         loadPinDetails();
         setupListeners();
@@ -41,13 +47,17 @@ public class DetailActivity extends AppCompatActivity {
         String description = intent.getStringExtra("description");
         String imagePath = intent.getStringExtra("imagePath");
 
-        detailTitle.setText(title != null ? title : "");
-        detailDescription.setText(description != null ? description : "");
+        currentTitle = title != null ? title : "";
+        currentDescription = description != null ? description : "";
+        currentImagePath = imagePath != null ? imagePath : "";
+
+        detailTitle.setText(currentTitle);
+        detailDescription.setText(currentDescription);
 
         // Load image using Glide
-        if (imagePath != null && !imagePath.isEmpty()) {
+        if (!currentImagePath.isEmpty()) {
             Glide.with(this)
-                    .load(imagePath)
+                    .load(currentImagePath)
                     .placeholder(R.drawable.placeholder_image)
                     .error(R.drawable.placeholder_image)
                     .centerCrop()
@@ -59,7 +69,7 @@ public class DetailActivity extends AppCompatActivity {
 
     private void setupListeners() {
         btnShare.setOnClickListener(v -> sharePin());
-        btnCall.setOnClickListener(v -> makeCall());
+        btnCall.setOnClickListener(v -> savePin());
     }
 
     private void sharePin() {
@@ -73,14 +83,12 @@ public class DetailActivity extends AppCompatActivity {
         startActivity(Intent.createChooser(shareIntent, "Share via"));
     }
 
-    private void makeCall() {
-        Intent callIntent = new Intent(Intent.ACTION_DIAL);
-        callIntent.setData(Uri.parse("tel:5551234567"));
-        try {
-            startActivity(callIntent);
-        } catch (Exception e) {
-            // Handle exception if dialer is not available
+    private void savePin() {
+        boolean success = dbHelper.addPin(currentTitle, currentDescription, currentImagePath);
+        if (success) {
+            Toast.makeText(this, "Pin saved", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Unable to save pin", Toast.LENGTH_SHORT).show();
         }
     }
 }
-
