@@ -5,7 +5,7 @@ It is designed as a clean learning project for core Android concepts like Activi
 
 ---
 ### GIF Demo
-![App Demo](docs/minipin-eg-gif.gif)
+![App Demo](docs/minipin.gif)
 
 ---
 
